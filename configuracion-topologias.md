@@ -78,3 +78,51 @@ Una vez terminado el asistente, podremos ver que el contenedor docker fue agrega
 
 Dentro de esta configuración, se descomentarán las últimas dos líneas, necesarias para configurar el dispositivo con DHCP. una vez terminado daremos clic en “Save”.
 ![](_assets/configuracion-topologias/016.png)
+
+## Topología Sucursales
+La topoplogía de las sucursales cuenta con un router c3725 conectado a internet, además de un switch y por motivos de demostración por el momento solo cuenta con un host.
+
+![](media/image132.png)
+
+El Router R1 realiza un nateo para que las máquinas de la sucursal puedan conectarse a internet, además que mediante la interfaz f0/0 su dirección IP está configurada mediante DHCP, asimismo, se ha configurado un servicio DHCP para proveer a los hosts de la subred 10.X.0.0/16 (donde X puede ser 1 o 2, dependiendo de la sucursal, para ejemplos de este tutorial utilizaremos el octeto 2 que corresponde a la sucursal n° 2).
+
+Para poder configurar la IP mediante DHCP en la interfaz f0/0 realizaremos los siguientes comandos: 
+
+```
+R1#conf t
+R1(config)#in f0/0
+R1(config-if)#ip nat outside
+R1(config-if)#ip add dhcp
+R1(config-if)#no shut
+```
+Una vez configurada la interfaz f0/0, procederemos a configurar la interfaz f0/1, con la dirección de red 10.2.0.0/16:
+
+```
+R1(config-if)#in f0/1
+R1(config-if)#ip add 10.2.0.1 255.255.0.0
+R1(config-if)#ip nat inside
+R1(config-if)#no shut
+R1(config-if)#exit
+```
+
+A  continuación vamos a configurar el servicio NAT, este permitirá tener acceso a Internet a los equipos que se encuentran dentro de nuestra red interna del router. En este caso se usará la variante PAT (Port Address Translation), ya que solo se cuenta con una IP pública y la traducción se hará mediante la asignación de un puerto a cada petición de cada equipo de la red interna.
+
+Para configurar el servicio PAT dentro del router, se deberá realizar los sisguientes comandos dentro de la consola de comunicación.
+
+```
+R1(config)#access-list 1 permit 10.2.0.0 0.0.255.255
+R1(config)#ip nat inside source list 1 interface f0/0 overload
+```
+
+Y finalmente para configurar el servicio de DHCP para los hosts de la subred 10.2.0.0/16:
+
+```
+R1(config)#ip dhcp pool sucursal2
+R1(dhcp-config)#network 10.2.0.0 255.255.0.0
+R1(dhcp-config)#dns-server 1.1.1.1
+R1(dhcp-config)#default-router 10.2.0.1
+R1(dhcp-config)#exit
+```
+Y podremos corroborar en nuestro host windows que se ha configurado correctamente el servicio DHCP y NAT en el router.
+
+![](media/image133.png)
