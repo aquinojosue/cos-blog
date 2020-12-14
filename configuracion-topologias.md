@@ -3,6 +3,82 @@
 La topología consta de dos servidores en la vlan DMZ (FreePBX y DNS), un firewall mediante pfSense, vpcs para simular hosts y un contenedor docker que simula un host con navegador web, además de una máquina virtual con Windows que simula un cliente con funcionamiento VoIP.
 ![topologia-central](_assets/configuracion-topologias/topologia-central.png)
 
+### VLSM Topología Casa Matriz
+<table align="center">
+		<tr>
+			<th>Subred</th>
+			<th>No. de Hosts</th>
+			<th>Dir. de red</th>
+			<th>Máscara</th>
+			<th>Másc. (Decimal)</th>
+			<th>Rango utilizable</th>
+			<th>Broadcast</th>
+		</tr>
+		<tr>
+			<td style="font-weight:bold">Atención al cliente</td>
+			<td>126</td>
+			<td>10.0.0.128</td>
+			<td>/25</td>
+			<td>255.255.255.128</td>
+			<td>10.0.0.129 - 10.0.0.254</td>
+			<td>10.0.0.255</td>
+		</tr>		
+		<tr>
+			<td style="font-weight:bold">Soporte técnico</td>
+			<td>126</td>
+			<td>10.0.1.128</td>
+			<td>/25</td>
+			<td>255.255.255.128</td>
+			<td>10.0.1.129 - 10.0.1.254</td>
+			<td>10.0.1.255</td>
+		</tr>		
+		<tr>
+			<td style="font-weight:bold">Recursos Humanos</td>
+			<td>126</td>
+			<td>10.0.1.0</td>
+			<td>/25</td>
+			<td>255.255.255.128</td>
+			<td>10.0.1.1 - 10.0.1.126</td>
+			<td>10.0.1.127</td>
+		</tr>		
+		<tr>
+			<td style="font-weight:bold">Administración financiera</td>
+			<td>126</td>
+			<td>10.0.0.0</td>
+			<td>/25</td>
+			<td>255.255.255.128</td>
+			<td>10.0.0.1 - 10.0.0.126</td>
+			<td>10.0.0.127</td>
+		</tr>		
+		<tr>
+			<td style="font-weight:bold">DMZ</td>
+			<td>30</td>
+			<td>10.0.2.0</td>
+			<td>/27</td>
+			<td>255.255.255.224</td>
+			<td>10.0.2.1 - 10.0.2.30</td>
+			<td>10.0.2.31</td>
+		</tr>		
+		<tr>
+			<td style="font-weight:bold">Casa Matriz</td>
+			<td>14</td>
+			<td>10.0.2.32</td>
+			<td>/28</td>
+			<td>255.255.255.240</td>
+			<td>10.0.2.33 - 10.0.2.46</td>
+			<td>10.0.2.47</td>
+		</tr>		
+		<tr>
+			<td style="font-weight:bold">pfSense</td>
+			<td>2</td>
+			<td>10.0.2.48</td>
+			<td>/30</td>
+			<td>255.255.255.252</td>
+			<td>10.0.2.49 - 10.0.2.50</td>
+			<td>10.0.2.51</td>
+		</tr>		
+	</table>
+
 ### Configuración de las máquinas virtuales (FreePBX, DNS, pfSense y cliente Windows)
 Las siguientes configuraciones fueron realizadas desde VirtualBox:
 - Servidor FreePBX
